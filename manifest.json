@@ -1,0 +1,43 @@
+{
+  "name": "Guida Tecnica Universale",
+  "short_name": "Guida Tecnica",
+  "description": "Riferimento rapido per file, formati e concetti fondamentali dello sviluppo",
+  "start_url": "./guida-tecnica.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#7c5cfc",
+  "orientation": "portrait-primary",
+  "lang": "it",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Formati Dati",
+      "url": "./guida-tecnica.html#dati",
+      "description": "JSON, CSV, XML"
+    },
+    {
+      "name": "Script",
+      "url": "./guida-tecnica.html#script",
+      "description": "Python, Bash, Batch"
+    },
+    {
+      "name": "Concetti",
+      "url": "./guida-tecnica.html#concetti",
+      "description": "API, HTTP, CLI"
+    }
+  ]
+}

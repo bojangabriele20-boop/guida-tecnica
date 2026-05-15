@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida Tecnica Universale</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c5cfc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guida Tecnica">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="description" content="Riferimento rapido per file, formati e concetti fondamentali dello sviluppo">
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3f;
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cfcb8;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --code-bg: #0d0d18;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  /* Grid noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(124,92,252,0.02) 40px, rgba(124,92,252,0.02) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(124,92,252,0.02) 40px, rgba(124,92,252,0.02) 41px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(252,92,125,0.05));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '< />';
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8rem;
+    color: rgba(124,92,252,0.04);
+    pointer-events: none;
+  }
+
+  header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #7c5cfc, #fc5c7d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+
+  header p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Category nav */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+  }
+
+  .nav a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+
+  .nav a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(124,92,252,0.1);
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(124,92,252,0.4);
+    transform: translateY(-1px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .badge.data    { background: rgba(92,252,184,0.12); color: #5cfcb8; border: 1px solid rgba(92,252,184,0.25); }
+  .badge.script  { background: rgba(124,92,252,0.12); color: #a080ff; border: 1px solid rgba(124,92,252,0.25); }
+  .badge.config  { background: rgba(252,200,92,0.12); color: #fcc85c; border: 1px solid rgba(252,200,92,0.25); }
+  .badge.concept { background: rgba(252,92,125,0.12); color: #fc5c7d; border: 1px solid rgba(252,92,125,0.25); }
+  .badge.doc     { background: rgba(92,184,252,0.12); color: #5cb8fc; border: 1px solid rgba(92,184,252,0.25); }
+
+  .card-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .card-arrow {
+    margin-left: auto;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    font-size: 1.2rem;
+  }
+
+  .card.open .card-arrow { transform: rotate(90deg); color: var(--accent); }
+
+  .card-body {
+    display: none;
+    padding: 0 1.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+    padding-top: 1.25rem;
+  }
+
+  .card.open .card-body { display: block; }
+
+  .card-body p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .card-body strong { color: var(--text); }
+
+  /* Info grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+  }
+
+  .info-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+
+  .info-box .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 0.35rem;
+  }
+
+  .info-box .value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Code block */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0;
+    overflow-x: auto;
+  }
+
+  .code-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .code-block pre {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .hl-key   { color: #a080ff; }
+  .hl-str   { color: #5cfcb8; }
+  .hl-num   { color: #fcc85c; }
+  .hl-bool  { color: #fc5c7d; }
+  .hl-cmt   { color: #4a4a6a; font-style: italic; }
+  .hl-tag   { color: #5cb8fc; }
+  .hl-attr  { color: #a080ff; }
+
+  /* Use cases tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .tip {
+    background: rgba(124,92,252,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+  }
+
+  .tip strong { color: var(--accent); }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Guida Tecnica<br>Universale</h1>
+    <p>// riferimento rapido per file, formati e concetti fondamentali</p>
+  </header>
+
+  <nav class="nav">
+    <a href="#dati">📦 Dati</a>
+    <a href="#script">⚙️ Script</a>
+    <a href="#config">🔧 Config</a>
+    <a href="#concetti">💡 Concetti</a>
+    <a href="#documenti">📄 Documenti</a>
+    <a href="#strumenti">🛠️ Strumenti</a>
+  </nav>
+
+  <!-- DATI -->
+  <div class="section" id="dati">
+    <div class="section-title">📦 Formati dati</div>
+
+    <!-- JSON -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge data">.json</span>
+        <div>
+          <div class="card-title">JSON</div>
+          <div class="card-subtitle">JavaScript Object Notation</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> formato testuale per rappresentare dati strutturati come coppie chiave-valore, liste e oggetti annidati. È lo standard del web moderno.</p>
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Estensione</div><div class="value">.json</div></div>
+          <div class="info-box"><div class="label">Leggibile da umani</div><div class="value">✅ Sì</div></div>
+          <div class="info-box"><div class="label">Supporto linguaggi</div><div class="value">Tutti</div></div>
+          <div class="info-box"><div class="label">Velocità parsing</div><div class="value">⚡ Molto veloce</div></div>
+        </div>
+        <div class="code-label">Esempio</div>
+        <div class="code-block"><pre>{
+  <span class="hl-key">"nome"</span>: <span class="hl-str">"Gabriele"</span>,
+  <span class="hl-key">"età"</span>: <span class="hl-num">16</span>,
+  <span class="hl-key">"attivo"</span>: <span class="hl-bool">true</span>,
+  <span class="hl-key">"interessi"</span>: [<span class="hl-str">"fitness"</span>, <span class="hl-str">"coding"</span>],
+  <span class="hl-key">"indirizzo"</span>: {
+    <span class="hl-key">"città"</span>: <span class="hl-str">"Milano"</span>
+  }
+}</pre></div>
+        <div class="tags">
+          <span class="tag">API REST</span>
+          <span class="tag">configurazioni</span>
+          <span class="tag">database leggeri</span>
+          <span class="tag">risposta server</span>
+          <span class="tag">package.json</span>
+        </div>
+        <div class="tip"><strong>Regola base:</strong> tutto tra <code>{ }</code> è un oggetto, tra <code>[ ]</code> è una lista. Le chiavi vanno sempre tra virgolette doppie.</div>
+      </div>
+    </div>
+
+    <!-- CSV -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge data">.csv</span>
+        <div>
+          <div class="card-title">CSV</div>
+          <div class="card-subtitle">Comma-Separated Values</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> formato tabellare semplicissimo dove ogni riga è un record e le colonne sono separate da virgole (o punto e virgola). È il formato universale per dati a tabella.</p>
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Estensione</div><div class="value">.csv</div></div>
+          <div class="info-box"><div class="label">Struttura</div><div class="value">Tabellare (righe/colonne)</div></div>
+          <div class="info-box"><div class="label">Aperto con</div><div class="value">Excel, Python, qualsiasi cosa</div></div>
+          <div class="info-box"><div class="label">Dimensioni</div><div class="value">Molto leggero</div></div>
+        </div>
+        <div class="code-label">Esempio</div>
+        <div class="code-block"><pre><span class="hl-key">nome</span>,età,città
+<span class="hl-str">Gabriele</span>,16,Milano
+<span class="hl-str">Marco</span>,17,Roma
+<span class="hl-str">Sara</span>,16,Napoli</pre></div>
+        <div class="tags">
+          <span class="tag">database export</span>
+          <span class="tag">fogli Excel</span>
+          <span class="tag">log dati</span>
+          <span class="tag">machine learning datasets</span>
+        </div>
+        <div class="tip"><strong>Attenzione:</strong> se un valore contiene una virgola, va messo tra virgolette: <code>"Rossi, Marco"</code>. In Italia spesso il separatore è il punto e virgola <code>;</code>.</div>
+      </div>
+    </div>
+
+    <!-- XML -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge data">.xml</span>
+        <div>
+          <div class="card-title">XML</div>
+          <div class="card-subtitle">eXtensible Markup Language</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> formato basato su tag annidati (simile all'HTML). Era lo standard per lo scambio dati prima del JSON. Oggi è ancora usato in sistemi aziendali, feed RSS e alcune API vecchie.</p>
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Estensione</div><div class="value">.xml</div></div>
+          <div class="info-box"><div class="label">Verbosità</div><div class="value">🔴 Alta (molto testo)</div></div>
+          <div class="info-box"><div class="label">Usato oggi</div><div class="value">Sistemi legacy, RSS</div></div>
+          <div class="info-box"><div class="label">Alternativa moderna</div><div class="value">JSON (più snello)</div></div>
+        </div>
+        <div class="code-label">Esempio (stesso dato del JSON sopra)</div>
+        <div class="code-block"><pre><span class="hl-tag">&lt;utente&gt;</span>
+  <span class="hl-tag">&lt;nome&gt;</span>Gabriele<span class="hl-tag">&lt;/nome&gt;</span>
+  <span class="hl-tag">&lt;età&gt;</span>16<span class="hl-tag">&lt;/età&gt;</span>
+  <span class="hl-tag">&lt;interessi&gt;</span>
+    <span class="hl-tag">&lt;item&gt;</span>fitness<span class="hl-tag">&lt;/item&gt;</span>
+    <span class="hl-tag">&lt;item&gt;</span>coding<span class="hl-tag">&lt;/item&gt;</span>
+  <span class="hl-tag">&lt;/interessi&gt;</span>
+<span class="hl-tag">&lt;/utente&gt;</span></pre></div>
+        <div class="tags">
+          <span class="tag">feed RSS</span>
+          <span class="tag">SOAP API</span>
+          <span class="tag">Word/Excel interni</span>
+          <span class="tag">configurazioni Java</span>
+        </div>
+        <div class="tip"><strong>JSON vs XML:</strong> JSON è più corto e più veloce da leggere. XML è più verboso ma supporta attributi nei tag e validazione schema. Preferisci sempre JSON se puoi scegliere.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCRIPT -->
+  <div class="section" id="script">
+    <div class="section-title">⚙️ File script & eseguibili</div>
+
+    <!-- Python -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge script">.py</span>
+        <div>
+          <div class="card-title">Python Script</div>
+          <div class="card-subtitle">Il linguaggio dell'automazione</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> file di testo contenente codice Python. È il linguaggio più usato per automazione, data analysis, AI, bot e script. Viene eseguito dall'interprete Python.</p>
+        <div class="code-label">Esempio — script automatico per rinominare file</div>
+        <div class="code-block"><pre><span class="hl-cmt"># rinomina tutti i .txt in una cartella</span>
+<span class="hl-key">import</span> os
+
+<span class="hl-key">for</span> file <span class="hl-key">in</span> os.listdir(<span class="hl-str">"."</span>):
+    <span class="hl-key">if</span> file.endswith(<span class="hl-str">".txt"</span>):
+        nuovo = file.replace(<span class="hl-str">".txt"</span>, <span class="hl-str">"_backup.txt"</span>)
+        os.rename(file, nuovo)
+        <span class="hl-key">print</span>(<span class="hl-str">f"Rinominato: {file} → {nuovo}"</span>)</pre></div>
+        <div class="tags">
+          <span class="tag">automazione</span>
+          <span class="tag">web scraping</span>
+          <span class="tag">bot Telegram</span>
+          <span class="tag">AI/ML</span>
+          <span class="tag">API calls</span>
+          <span class="tag">pipeline dati</span>
+        </div>
+        <div class="tip"><strong>Come si esegue:</strong> da terminale con <code>python nomefile.py</code> oppure su Android con Pydroid3.</div>
+      </div>
+    </div>
+
+    <!-- Bash -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge script">.sh</span>
+        <div>
+          <div class="card-title">Bash / Shell Script</div>
+          <div class="card-subtitle">Automazione su Linux & Mac</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> sequenza di comandi da terminale salvata in un file. Permette di automatizzare operazioni di sistema: spostare file, eseguire programmi, fare backup, ecc.</p>
+        <div class="code-label">Esempio — backup automatico</div>
+        <div class="code-block"><pre><span class="hl-cmt">#!/bin/bash</span>
+<span class="hl-cmt"># crea un backup della cartella Documenti</span>
+
+DATA=$(date +%Y-%m-%d)
+zip -r <span class="hl-str">"backup_$DATA.zip"</span> ~/Documenti
+<span class="hl-key">echo</span> <span class="hl-str">"Backup creato: backup_$DATA.zip"</span></pre></div>
+        <div class="tags">
+          <span class="tag">Linux/Mac</span>
+          <span class="tag">backup</span>
+          <span class="tag">CI/CD</span>
+          <span class="tag">deploy server</span>
+          <span class="tag">cron jobs</span>
+        </div>
+        <div class="tip"><strong>Prima riga obbligatoria:</strong> <code>#!/bin/bash</code> dice al sistema quale interprete usare. Per eseguire: <code>chmod +x script.sh</code> poi <code>./script.sh</code>.</div>
+      </div>
+    </div>
+
+    <!-- Batch -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge script">.bat</span>
+        <div>
+          <div class="card-title">Batch File</div>
+          <div class="card-subtitle">Automazione su Windows</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> equivalente Windows del file .sh. Contiene comandi del prompt dei comandi (cmd.exe). Si esegue con doppio click o dal terminale.</p>
+        <div class="code-label">Esempio — apri 3 siti e poi spegni il PC</div>
+        <div class="code-block"><pre><span class="hl-cmt">@echo off</span>
+start chrome https://youtube.com
+start chrome https://github.com
+<span class="hl-key">echo</span> Siti aperti!
+<span class="hl-cmt">REM shutdown /s /t 60</span>  <span class="hl-cmt">(spegni tra 60 sec)</span></pre></div>
+        <div class="tags">
+          <span class="tag">solo Windows</span>
+          <span class="tag">automazione locale</span>
+          <span class="tag">avvio programmi</span>
+          <span class="tag">script di setup</span>
+        </div>
+        <div class="tip"><strong>Alternativa moderna su Windows:</strong> PowerShell (<code>.ps1</code>) è molto più potente. Il .bat è rimasto per compatibilità con sistemi vecchi.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONFIG -->
+  <div class="section" id="config">
+    <div class="section-title">🔧 File di configurazione</div>
+
+    <!-- YAML -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge config">.yaml</span>
+        <div>
+          <div class="card-title">YAML</div>
+          <div class="card-subtitle">YAML Ain't Markup Language</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> formato di configurazione leggibile progettato per essere scritto da umani. Usa l'indentazione (spazi) per la struttura, senza parentesi o virgolette ovunque. È lo standard per Docker, GitHub Actions, Kubernetes.</p>
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Estensione</div><div class="value">.yaml o .yml</div></div>
+          <div class="info-box"><div class="label">Sensibile a</div><div class="value">⚠️ Indentazione (spazi!)</div></div>
+        </div>
+        <div class="code-label">Esempio — configurazione app</div>
+        <div class="code-block"><pre><span class="hl-key">server:</span>
+  <span class="hl-key">host:</span> <span class="hl-str">localhost</span>
+  <span class="hl-key">port:</span> <span class="hl-num">8080</span>
+  <span class="hl-key">debug:</span> <span class="hl-bool">true</span>
+
+<span class="hl-key">database:</span>
+  <span class="hl-key">nome:</span> <span class="hl-str">mydb</span>
+  <span class="hl-key">utenti_max:</span> <span class="hl-num">100</span>
+
+<span class="hl-key">features:</span>
+  - <span class="hl-str">login</span>
+  - <span class="hl-str">notifiche</span>
+  - <span class="hl-str">export_csv</span></pre></div>
+        <div class="tags">
+          <span class="tag">Docker Compose</span>
+          <span class="tag">GitHub Actions</span>
+          <span class="tag">Kubernetes</span>
+          <span class="tag">configurazioni app</span>
+        </div>
+        <div class="tip"><strong>Errore comune:</strong> usare TAB invece degli spazi. YAML accetta solo spazi per l'indentazione. Un TAB rompe tutto senza dare errori chiari.</div>
+      </div>
+    </div>
+
+    <!-- .env -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge config">.env</span>
+        <div>
+          <div class="card-title">Environment File</div>
+          <div class="card-subtitle">Variabili d'ambiente & segreti</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> file di testo semplice che contiene variabili d'ambiente. Serve a tenere separati i dati sensibili (password, API key, URL) dal codice. Non viene mai caricato su GitHub.</p>
+        <div class="code-label">Esempio — .env di un progetto Python</div>
+        <div class="code-block"><pre><span class="hl-cmt"># NON caricare mai questo file su GitHub!</span>
+<span class="hl-key">ANTHROPIC_API_KEY</span>=sk-ant-xxxxxxxxxxxx
+<span class="hl-key">DATABASE_URL</span>=postgresql://user:pass@localhost/mydb
+<span class="hl-key">DEBUG</span>=<span class="hl-bool">true</span>
+<span class="hl-key">MAX_REQUESTS</span>=<span class="hl-num">100</span></pre></div>
+        <div class="code-label">Come si usa in Python</div>
+        <div class="code-block"><pre><span class="hl-key">from</span> dotenv <span class="hl-key">import</span> load_dotenv
+<span class="hl-key">import</span> os
+
+load_dotenv()
+api_key = os.getenv(<span class="hl-str">"ANTHROPIC_API_KEY"</span>)
+<span class="hl-key">print</span>(api_key)  <span class="hl-cmt"># sk-ant-xxxx...</span></pre></div>
+        <div class="tags">
+          <span class="tag">API keys</span>
+          <span class="tag">password DB</span>
+          <span class="tag">configurazione ambienti</span>
+          <span class="tag">deploy</span>
+        </div>
+        <div class="tip"><strong>Regola d'oro:</strong> aggiungi sempre <code>.env</code> al file <code>.gitignore</code> per non caricarlo accidentalmente su GitHub e non esporre le tue credenziali.</div>
+      </div>
+    </div>
+
+    <!-- .gitignore -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge config">.gitignore</span>
+        <div>
+          <div class="card-title">.gitignore</div>
+          <div class="card-subtitle">File da escludere da Git</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> lista di file e cartelle che Git deve ignorare e non caricare su GitHub. Serve per escludere segreti, file temporanei e dipendenze pesanti.</p>
+        <div class="code-label">Esempio tipico</div>
+        <div class="code-block"><pre><span class="hl-cmt"># segreti</span>
+.env
+secrets.json
+
+<span class="hl-cmt"># dipendenze Python (si reinstallano)</span>
+__pycache__/
+venv/
+
+<span class="hl-cmt"># file OS</span>
+.DS_Store
+Thumbs.db
+
+<span class="hl-cmt"># tutti i .log</span>
+*.log</pre></div>
+        <div class="tags">
+          <span class="tag">Git</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">sicurezza</span>
+          <span class="tag">pulizia repo</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONCETTI -->
+  <div class="section" id="concetti">
+    <div class="section-title">💡 Concetti fondamentali</div>
+
+    <!-- API -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge concept">API</span>
+        <div>
+          <div class="card-title">API</div>
+          <div class="card-subtitle">Application Programming Interface</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> un'interfaccia che permette a due programmi di comunicare tra loro. È come un cameriere: tu fai una richiesta, lui va in cucina (il server) e ti porta la risposta.</p>
+        <div class="code-label">Analogia visiva</div>
+        <div class="code-block"><pre>TU (client)  →  richiesta HTTP  →  SERVER
+TU (client)  ←  risposta JSON   ←  SERVER
+
+Esempio reale:
+[app meteo] → "dammi temp. Roma" → [server meteo]
+[app meteo] ← { "temp": 22, "cielo": "sereno" } ←</pre></div>
+        <div class="code-label">Chiamata API reale in Python</div>
+        <div class="code-block"><pre><span class="hl-key">import</span> requests
+
+risposta = requests.get(
+    <span class="hl-str">"https://api.openweathermap.org/data/2.5/weather"</span>,
+    params={<span class="hl-str">"q"</span>: <span class="hl-str">"Roma"</span>, <span class="hl-str">"appid"</span>: <span class="hl-str">"TUA_API_KEY"</span>}
+)
+
+dati = risposta.json()  <span class="hl-cmt"># converte in dizionario</span>
+<span class="hl-key">print</span>(dati[<span class="hl-str">"main"</span>][<span class="hl-str">"temp"</span>])</pre></div>
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Metodi principali</div><div class="value">GET · POST · PUT · DELETE</div></div>
+          <div class="info-box"><div class="label">Formato risposta</div><div class="value">Quasi sempre JSON</div></div>
+          <div class="info-box"><div class="label">Autenticazione</div><div class="value">API Key o Token</div></div>
+          <div class="info-box"><div class="label">Protocollo</div><div class="value">HTTP/HTTPS</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag">REST API</span>
+          <span class="tag">Anthropic</span>
+          <span class="tag">YouTube API</span>
+          <span class="tag">meteo</span>
+          <span class="tag">pagamenti</span>
+          <span class="tag">social media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTTP Methods -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge concept">HTTP</span>
+        <div>
+          <div class="card-title">Metodi HTTP</div>
+          <div class="card-subtitle">GET · POST · PUT · DELETE</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> il "verbo" che dice al server cosa vuoi fare con una risorsa. È lo stesso concetto delle operazioni CRUD sui database.</p>
+        <div class="code-block"><pre><span class="hl-key">GET</span>    → <span class="hl-str">leggi</span>    → "dammi lista utenti"
+<span class="hl-key">POST</span>   → <span class="hl-str">crea</span>     → "crea nuovo utente"
+<span class="hl-key">PUT</span>    → <span class="hl-str">aggiorna</span> → "modifica utente #5"
+<span class="hl-key">DELETE</span> → <span class="hl-str">elimina</span>  → "cancella utente #5"
+
+<span class="hl-cmt"># Codici risposta comuni:</span>
+<span class="hl-num">200</span> OK          → tutto ok
+<span class="hl-num">201</span> Created      → creato con successo
+<span class="hl-num">400</span> Bad Request  → errore nella tua richiesta
+<span class="hl-num">401</span> Unauthorized → non sei autenticato
+<span class="hl-num">404</span> Not Found    → risorsa non trovata
+<span class="hl-num">500</span> Server Error → errore lato server</pre></div>
+      </div>
+    </div>
+
+    <!-- Terminale / CLI -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge concept">CLI</span>
+        <div>
+          <div class="card-title">Terminale / CLI</div>
+          <div class="card-subtitle">Command Line Interface</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> interfaccia testuale per comunicare con il sistema operativo digitando comandi. Più potente e veloce di qualsiasi interfaccia grafica per l'automazione.</p>
+        <div class="code-label">Comandi essenziali (Linux/Mac/Termux)</div>
+        <div class="code-block"><pre>ls              <span class="hl-cmt"># elenca file nella cartella</span>
+cd cartella     <span class="hl-cmt"># entra nella cartella</span>
+cd ..           <span class="hl-cmt"># torna indietro</span>
+pwd             <span class="hl-cmt"># mostra dove sei</span>
+mkdir nome      <span class="hl-cmt"># crea cartella</span>
+cp a.txt b.txt  <span class="hl-cmt"># copia file</span>
+mv a.txt c/     <span class="hl-cmt"># sposta file</span>
+rm file.txt     <span class="hl-cmt"># cancella file</span>
+cat file.txt    <span class="hl-cmt"># mostra contenuto</span>
+python main.py  <span class="hl-cmt"># esegui script Python</span></pre></div>
+        <div class="tags">
+          <span class="tag">bash</span>
+          <span class="tag">Termux Android</span>
+          <span class="tag">PowerShell</span>
+          <span class="tag">npm/pip</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- pip & package manager -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge concept">PKG</span>
+        <div>
+          <div class="card-title">Package Manager</div>
+          <div class="card-subtitle">pip · npm · apt</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> strumento che installa, aggiorna e gestisce librerie esterne. Ogni linguaggio ha il suo. Ti permette di usare codice scritto da altri senza reinventare la ruota.</p>
+        <div class="code-block"><pre><span class="hl-cmt"># Python → pip</span>
+pip install requests          <span class="hl-cmt"># installa</span>
+pip install requests==2.28.0  <span class="hl-cmt"># versione specifica</span>
+pip uninstall requests        <span class="hl-cmt"># rimuovi</span>
+pip list                      <span class="hl-cmt"># mostra installati</span>
+
+<span class="hl-cmt"># JavaScript → npm</span>
+npm install axios
+npm run start
+
+<span class="hl-cmt"># Linux → apt</span>
+sudo apt install python3</pre></div>
+        <div class="code-label">requirements.txt — lista dipendenze Python</div>
+        <div class="code-block"><pre>requests==2.28.2
+python-dotenv==1.0.0
+openai==1.3.0</pre></div>
+        <div class="tip"><strong>Buona pratica:</strong> salva sempre le dipendenze con <code>pip freeze > requirements.txt</code> così chiunque può ricreare il tuo ambiente con <code>pip install -r requirements.txt</code>.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DOCUMENTI -->
+  <div class="section" id="documenti">
+    <div class="section-title">📄 Formati documento</div>
+
+    <!-- Markdown -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge doc">.md</span>
+        <div>
+          <div class="card-title">Markdown</div>
+          <div class="card-subtitle">Testo formattato senza Word</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> formato testuale leggero per scrivere documenti formattati usando semplici simboli. È lo standard per documentazione tecnica, README su GitHub e note. Anche Claude usa Markdown nelle risposte.</p>
+        <div class="code-label">Sintassi base</div>
+        <div class="code-block"><pre><span class="hl-key"># Titolo grande</span>
+<span class="hl-key">## Titolo medio</span>
+
+<span class="hl-str">**grassetto**</span>  *corsivo*  ~~barrato~~
+
+<span class="hl-key">- </span>lista puntata
+<span class="hl-key">1.</span> lista numerata
+
+<span class="hl-str">`codice inline`</span>
+
+```python
+print("blocco codice")
+```
+
+[testo link](https://url.com)
+![immagine](foto.jpg)</pre></div>
+        <div class="tags">
+          <span class="tag">README GitHub</span>
+          <span class="tag">documentazione</span>
+          <span class="tag">Notion</span>
+          <span class="tag">Obsidian</span>
+          <span class="tag">blog tecnici</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTML -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge doc">.html</span>
+        <div>
+          <div class="card-title">HTML</div>
+          <div class="card-subtitle">HyperText Markup Language</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> il linguaggio delle pagine web. Definisce la struttura di una pagina tramite tag. CSS aggiunge lo stile, JavaScript aggiunge l'interattività. Anche questo documento è HTML.</p>
+        <div class="code-label">Struttura minima</div>
+        <div class="code-block"><pre><span class="hl-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="hl-tag">&lt;html&gt;</span>
+  <span class="hl-tag">&lt;head&gt;</span>
+    <span class="hl-tag">&lt;title&gt;</span>La mia pagina<span class="hl-tag">&lt;/title&gt;</span>
+  <span class="hl-tag">&lt;/head&gt;</span>
+  <span class="hl-tag">&lt;body&gt;</span>
+    <span class="hl-tag">&lt;h1&gt;</span>Ciao mondo!<span class="hl-tag">&lt;/h1&gt;</span>
+    <span class="hl-tag">&lt;p&gt;</span>Questo è un paragrafo.<span class="hl-tag">&lt;/p&gt;</span>
+    <span class="hl-tag">&lt;a <span class="hl-attr">href</span>=<span class="hl-str">"https://google.com"</span>&gt;</span>Link<span class="hl-tag">&lt;/a&gt;</span>
+  <span class="hl-tag">&lt;/body&gt;</span>
+<span class="hl-tag">&lt;/html&gt;</span></pre></div>
+        <div class="tags">
+          <span class="tag">pagine web</span>
+          <span class="tag">email HTML</span>
+          <span class="tag">report visivi</span>
+          <span class="tag">web scraping</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge doc">.pdf</span>
+        <div>
+          <div class="card-title">PDF</div>
+          <div class="card-subtitle">Portable Document Format</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> formato documento a layout fisso, identico su qualsiasi dispositivo. Non si modifica facilmente, ma è lo standard per documenti ufficiali, fatture, report.</p>
+        <div class="code-label">Come generarlo in Python</div>
+        <div class="code-block"><pre><span class="hl-key">from</span> reportlab.pdfgen <span class="hl-key">import</span> canvas
+
+c = canvas.Canvas(<span class="hl-str">"report.pdf"</span>)
+c.drawString(<span class="hl-num">100</span>, <span class="hl-num">750</span>, <span class="hl-str">"Report Automatico"</span>)
+c.drawString(<span class="hl-num">100</span>, <span class="hl-num">730</span>, <span class="hl-str">"Generato da Python"</span>)
+c.save()</pre></div>
+        <div class="tags">
+          <span class="tag">fatture</span>
+          <span class="tag">report</span>
+          <span class="tag">documenti ufficiali</span>
+          <span class="tag">estrarre testo (OCR)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STRUMENTI -->
+  <div class="section" id="strumenti">
+    <div class="section-title">🛠️ Strumenti fondamentali</div>
+
+    <!-- GITHUB -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge script">GitHub</span>
+        <div>
+          <div class="card-title">GitHub & Git</div>
+          <div class="card-subtitle">Controllo versione & collaborazione</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Git</strong> è uno strumento locale che traccia la storia di tutte le modifiche al tuo codice. <strong>GitHub</strong> è il sito dove carichi quella storia online, per salvarla nel cloud, condividerla o collaborare con altri.</p>
+        <p>Pensa a Git come a un <strong>salvataggio multiplo</strong> nei videogiochi: ogni "commit" è un punto di salvataggio a cui puoi tornare. GitHub è il server cloud dove carichi quei salvataggi.</p>
+
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Git</div><div class="value">Strumento locale sul tuo PC</div></div>
+          <div class="info-box"><div class="label">GitHub</div><div class="value">Sito cloud per i tuoi repo</div></div>
+          <div class="info-box"><div class="label">Repository (repo)</div><div class="value">Cartella tracciata da Git</div></div>
+          <div class="info-box"><div class="label">Commit</div><div class="value">Punto di salvataggio con messaggio</div></div>
+        </div>
+
+        <div class="code-label">Flusso base — dalla prima volta al caricamento</div>
+        <div class="code-block"><pre><span class="hl-cmt"># 1. Configura Git (solo la prima volta in assoluto)</span>
+git config --global user.name <span class="hl-str">"Gabriele"</span>
+git config --global user.email <span class="hl-str">"tua@email.com"</span>
+
+<span class="hl-cmt"># 2. Inizializza un repo nella cartella del progetto</span>
+git init
+
+<span class="hl-cmt"># 3. Aggiungi i file al "palco" (staging area)</span>
+git add .                  <span class="hl-cmt"># aggiunge tutto</span>
+git add main.py            <span class="hl-cmt"># aggiunge solo un file</span>
+
+<span class="hl-cmt"># 4. Crea un punto di salvataggio (commit)</span>
+git commit -m <span class="hl-str">"Prima versione del progetto"</span>
+
+<span class="hl-cmt"># 5. Collega al repo su GitHub (lo crei prima su github.com)</span>
+git remote add origin https://github.com/tuonome/repo.git
+
+<span class="hl-cmt"># 6. Carica su GitHub</span>
+git push -u origin main</pre></div>
+
+        <div class="code-label">Comandi quotidiani — il ciclo normale</div>
+        <div class="code-block"><pre><span class="hl-cmt"># Controlla cosa è cambiato</span>
+git status
+
+<span class="hl-cmt"># Vedi le differenze riga per riga</span>
+git diff
+
+<span class="hl-cmt"># Salva le modifiche</span>
+git add .
+git commit -m <span class="hl-str">"Aggiunta funzione di login"</span>
+
+<span class="hl-cmt"># Carica su GitHub</span>
+git push
+
+<span class="hl-cmt"># Scarica aggiornamenti da GitHub</span>
+git pull
+
+<span class="hl-cmt"># Vedi la storia dei commit</span>
+git log --oneline</pre></div>
+
+        <div class="code-label">Branch — lavorare in parallelo senza rompere nulla</div>
+        <div class="code-block"><pre><span class="hl-cmt"># Un branch è una copia del progetto dove sperimenti</span>
+<span class="hl-cmt"># senza toccare il codice principale (main)</span>
+
+git branch nuova-funzione       <span class="hl-cmt"># crea branch</span>
+git checkout nuova-funzione     <span class="hl-cmt"># spostati sul branch</span>
+<span class="hl-cmt"># oppure in un comando solo:</span>
+git checkout -b nuova-funzione
+
+<span class="hl-cmt"># ... fai le modifiche e i commit ...</span>
+
+<span class="hl-cmt"># Torna al main e unisci le modifiche</span>
+git checkout main
+git merge nuova-funzione
+
+<span class="hl-cmt"># Vedi tutti i branch</span>
+git branch</pre></div>
+
+        <div class="code-label">Scenari di emergenza</div>
+        <div class="code-block"><pre><span class="hl-cmt"># Annulla modifiche non ancora salvate</span>
+git checkout -- nomefile.py
+
+<span class="hl-cmt"># Torna all'ultimo commit (DISTRUGGE le modifiche non salvate)</span>
+git reset --hard HEAD
+
+<span class="hl-cmt"># Clona un repo esistente da GitHub sul tuo PC</span>
+git clone https://github.com/utente/repo.git
+
+<span class="hl-cmt"># Vedi la storia grafica dei branch</span>
+git log --oneline --graph --all</pre></div>
+
+        <div class="code-label">Struttura tipica di un progetto su GitHub</div>
+        <div class="code-block"><pre>mio-progetto/
+├── main.py           <span class="hl-cmt"># codice principale</span>
+├── requirements.txt  <span class="hl-cmt"># dipendenze Python</span>
+├── .env              <span class="hl-cmt"># segreti (NON caricato)</span>
+├── .gitignore        <span class="hl-cmt"># cosa ignorare</span>
+└── README.md         <span class="hl-cmt"># descrizione del progetto</span></pre></div>
+
+        <div class="tags">
+          <span class="tag">controllo versione</span>
+          <span class="tag">backup codice</span>
+          <span class="tag">collaborazione</span>
+          <span class="tag">open source</span>
+          <span class="tag">portfolio</span>
+          <span class="tag">CI/CD</span>
+        </div>
+        <div class="tip"><strong>Regola d'oro:</strong> fai commit spesso con messaggi chiari (<code>"Aggiunto login"</code> non <code>"fix"</code>). Ogni commit è un punto di salvataggio: più ne hai, più facile è tornare indietro se qualcosa si rompe.</div>
+      </div>
+    </div>
+
+    <!-- DOCKER -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge concept">Docker</span>
+        <div>
+          <div class="card-title">Docker</div>
+          <div class="card-subtitle">Contenitori per applicazioni</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> Docker crea dei <strong>contenitori</strong> — ambienti isolati e portatili che contengono tutto il necessario per eseguire un programma: il codice, le dipendenze, la versione di Python, le configurazioni. Funziona uguale su qualsiasi macchina.</p>
+        <p>Immagina una <strong>nave da carico</strong>: non importa cosa c'è dentro i container — si caricano e scaricano allo stesso modo ovunque. Il tuo codice è il contenuto, Docker è il container standardizzato.</p>
+
+        <div class="info-grid">
+          <div class="info-box"><div class="label">Image</div><div class="value">Blueprint del contenitore (ricetta)</div></div>
+          <div class="info-box"><div class="label">Container</div><div class="value">L'image in esecuzione (piatto pronto)</div></div>
+          <div class="info-box"><div class="label">Dockerfile</div><div class="value">File con le istruzioni per creare l'image</div></div>
+          <div class="info-box"><div class="label">Docker Hub</div><div class="value">GitHub delle image Docker pubbliche</div></div>
+        </div>
+
+        <div class="code-label">Dockerfile — istruzioni per costruire il tuo ambiente</div>
+        <div class="code-block"><pre><span class="hl-cmt"># Parti da un'image base (Python 3.11 già installato)</span>
+<span class="hl-key">FROM</span> python:<span class="hl-num">3.11</span>-slim
+
+<span class="hl-cmt"># Imposta la cartella di lavoro dentro il container</span>
+<span class="hl-key">WORKDIR</span> /app
+
+<span class="hl-cmt"># Copia i file delle dipendenze e installale</span>
+<span class="hl-key">COPY</span> requirements.txt .
+<span class="hl-key">RUN</span> pip install -r requirements.txt
+
+<span class="hl-cmt"># Copia tutto il codice del progetto</span>
+<span class="hl-key">COPY</span> . .
+
+<span class="hl-cmt"># Comando che si esegue quando il container parte</span>
+<span class="hl-key">CMD</span> [<span class="hl-str">"python"</span>, <span class="hl-str">"main.py"</span>]</pre></div>
+
+        <div class="code-label">Comandi Docker essenziali</div>
+        <div class="code-block"><pre><span class="hl-cmt"># Costruisci l'image dal Dockerfile</span>
+docker build -t mio-progetto .
+
+<span class="hl-cmt"># Avvia un container dall'image</span>
+docker run mio-progetto
+
+<span class="hl-cmt"># Avvia in background (-d) e mappa porta 8080→80</span>
+docker run -d -p 8080:80 mio-progetto
+
+<span class="hl-cmt"># Vedi i container in esecuzione</span>
+docker ps
+
+<span class="hl-cmt"># Vedi tutti i container (anche fermati)</span>
+docker ps -a
+
+<span class="hl-cmt"># Ferma un container</span>
+docker stop ID_CONTAINER
+
+<span class="hl-cmt"># Entra dentro un container (come aprire un terminale)</span>
+docker exec -it ID_CONTAINER bash
+
+<span class="hl-cmt"># Scarica un'image pubblica (es. database Postgres)</span>
+docker pull postgres</pre></div>
+
+        <div class="code-label">Docker Compose — gestire più container insieme</div>
+        <div class="code-block"><pre><span class="hl-cmt"># docker-compose.yml</span>
+<span class="hl-cmt"># Esempio: app Python + database Postgres</span>
+
+<span class="hl-key">version:</span> <span class="hl-str">"3.8"</span>
+
+<span class="hl-key">services:</span>
+  <span class="hl-key">app:</span>
+    <span class="hl-key">build:</span> <span class="hl-str">.</span>
+    <span class="hl-key">ports:</span>
+      - <span class="hl-str">"8000:8000"</span>
+    <span class="hl-key">environment:</span>
+      - <span class="hl-str">DATABASE_URL=postgresql://user:pass@db/mydb</span>
+    <span class="hl-key">depends_on:</span>
+      - <span class="hl-str">db</span>
+
+  <span class="hl-key">db:</span>
+    <span class="hl-key">image:</span> <span class="hl-str">postgres:15</span>
+    <span class="hl-key">environment:</span>
+      - <span class="hl-str">POSTGRES_PASSWORD=pass</span>
+      - <span class="hl-str">POSTGRES_DB=mydb</span></pre></div>
+
+        <div class="code-label">Comandi Docker Compose</div>
+        <div class="code-block"><pre><span class="hl-cmt"># Avvia tutti i servizi definiti nel compose</span>
+docker compose up
+
+<span class="hl-cmt"># Avvia in background</span>
+docker compose up -d
+
+<span class="hl-cmt"># Ferma tutto</span>
+docker compose down
+
+<span class="hl-cmt"># Ricostruisce le image e riavvia</span>
+docker compose up --build</pre></div>
+
+        <div class="code-label">Confronto — senza vs con Docker</div>
+        <div class="code-block"><pre><span class="hl-cmt">SENZA Docker:</span>
+"Sul mio PC funziona... sul tuo no"
+→ versioni diverse di Python
+→ dipendenze mancanti
+→ configurazioni diverse del SO
+
+<span class="hl-cmt">CON Docker:</span>
+"Funziona sul mio → funziona ovunque"
+→ tutto l'ambiente è dentro il container
+→ chiunque esegue docker run ottiene lo stesso risultato
+→ deploy su server = identico al tuo PC locale</pre></div>
+
+        <div class="tags">
+          <span class="tag">deploy applicazioni</span>
+          <span class="tag">ambienti isolati</span>
+          <span class="tag">microservizi</span>
+          <span class="tag">CI/CD</span>
+          <span class="tag">server</span>
+          <span class="tag">database locali</span>
+        </div>
+        <div class="tip"><strong>Quando usarlo:</strong> quando vuoi che il tuo progetto funzioni uguale su qualsiasi macchina, o quando devi avviare servizi complessi (database, API, frontend) tutti insieme con un comando solo.</div>
+      </div>
+    </div>
+
+    <!-- GitHub Actions -->
+    <div class="card" onclick="toggle(this)">
+      <div class="card-header">
+        <span class="badge config">Actions</span>
+        <div>
+          <div class="card-title">GitHub Actions</div>
+          <div class="card-subtitle">Automazione integrata in GitHub</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Cos'è:</strong> sistema di automazione integrato in GitHub. Ogni volta che fai un'azione sul repo (push, pull request, ecc.) puoi far partire automaticamente dei job: eseguire test, costruire il progetto, fare il deploy su un server.</p>
+        <p>I workflow si definiscono con file <strong>YAML</strong> dentro la cartella <code>.github/workflows/</code>.</p>
+
+        <div class="code-label">Esempio — esegui i test ad ogni push</div>
+        <div class="code-block"><pre><span class="hl-cmt"># .github/workflows/test.yml</span>
+
+<span class="hl-key">name:</span> <span class="hl-str">Test automatici</span>
+
+<span class="hl-key">on:</span>
+  <span class="hl-key">push:</span>              <span class="hl-cmt"># si attiva ad ogni push</span>
+    <span class="hl-key">branches:</span> [<span class="hl-str">main</span>]
+
+<span class="hl-key">jobs:</span>
+  <span class="hl-key">test:</span>
+    <span class="hl-key">runs-on:</span> <span class="hl-str">ubuntu-latest</span>   <span class="hl-cmt"># usa una VM Linux</span>
+    <span class="hl-key">steps:</span>
+      - <span class="hl-key">uses:</span> <span class="hl-str">actions/checkout@v3</span>  <span class="hl-cmt"># scarica il codice</span>
+      - <span class="hl-key">name:</span> <span class="hl-str">Installa Python</span>
+        <span class="hl-key">uses:</span> <span class="hl-str">actions/setup-python@v4</span>
+        <span class="hl-key">with:</span>
+          <span class="hl-key">python-version:</span> <span class="hl-str">"3.11"</span>
+      - <span class="hl-key">name:</span> <span class="hl-str">Installa dipendenze</span>
+        <span class="hl-key">run:</span> <span class="hl-str">pip install -r requirements.txt</span>
+      - <span class="hl-key">name:</span> <span class="hl-str">Esegui i test</span>
+        <span class="hl-key">run:</span> <span class="hl-str">python -m pytest</span></pre></div>
+
+        <div class="tags">
+          <span class="tag">CI/CD</span>
+          <span class="tag">test automatici</span>
+          <span class="tag">deploy automatico</span>
+          <span class="tag">build</span>
+          <span class="tag">notifiche</span>
+        </div>
+        <div class="tip"><strong>CI/CD in breve:</strong> CI = Continuous Integration (testa il codice ad ogni modifica), CD = Continuous Deployment (distribuisce automaticamente se i test passano). GitHub Actions fa entrambe le cose gratis per repo pubblici.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    ↑ Torna su e clicca su qualsiasi voce per espanderla &nbsp;·&nbsp; aggiornato 2025
+  </footer>
+
+</div>
+
+<script>
+  function toggle(card) {
+    card.classList.toggle('open');
+  }
+
+  // Registra il Service Worker per funzionalità offline
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('SW registrato:', reg.scope))
+        .catch(err => console.log('SW errore:', err));
+    });
+  }
+</script>
+</body>
+</html>
